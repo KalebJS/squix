@@ -156,13 +156,16 @@ func (m Model) handleVimKeyPress(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) handleHelixKeyPress(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
-	// Handle gg sequence: first g sets pendingG, second g jumps to first row
+	// Handle g-prefix sequences: gg = first row, ge = last row
 	if m.pendingG {
 		m.pendingG = false
-		if msg.String() == "g" {
+		switch msg.String() {
+		case "g":
 			return m.jumpToFirstRow(), nil
+		case "e":
+			return m.jumpToLastRow(), nil
 		}
-		// Fall through and process the key normally below
+		// Any other key: clear pendingG and fall through to process normally
 	}
 
 	switch msg.String() {
@@ -184,7 +187,7 @@ func (m Model) handleHelixKeyPress(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	case "g":
 		m.pendingG = true
 		return m, nil
-	case "G", "ge":
+	case "G":
 		return m.jumpToLastRow(), nil
 	case "gh":
 		return m.jumpToFirstCol(), nil

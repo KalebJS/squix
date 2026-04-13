@@ -257,8 +257,8 @@ func (m Model) renderFooter() string {
 
 		var sel, exportKey string
 		if m.keybindMode == "helix" {
-			sel = styles.TableHeader.Render("v") + styles.Faint.Render("/") + styles.TableHeader.Render("x") + styles.Faint.Render("sel")
-			exportKey = styles.TableHeader.Render("o") + styles.Faint.Render("xport")
+			sel = styles.TableHeader.Render("v") + styles.Faint.Render("sel")
+			exportKey = styles.Faint.Render("exp") + styles.TableHeader.Render("o") + styles.Faint.Render("rt")
 		} else {
 			sel = styles.TableHeader.Render("v") + styles.Faint.Render("sel")
 			exportKey = styles.Faint.Render("e") + styles.TableHeader.Render("x") + styles.Faint.Render("port")
