@@ -21,6 +21,7 @@ type Config struct {
 	DefaultRowLimit       int                         `yaml:"default_row_limit"`
 	DefaultColumnWidth    int                         `yaml:"default_column_width"`
 	UIVisibility          UIVisibility                `yaml:"ui_visibility"`
+	KeybindMode           string                      `yaml:"keybind_mode"`
 }
 
 type History struct {
@@ -49,6 +50,7 @@ func LoadConfig(path string) (*Config, error) {
 				History:            History{},
 				DefaultRowLimit:    1000,
 				DefaultColumnWidth: 15,
+				KeybindMode:        "vim",
 				UIVisibility: UIVisibility{
 					QueryName:         true,
 					QuerySQL:          true,
@@ -78,6 +80,9 @@ func LoadConfig(path string) (*Config, error) {
 	}
 	if cfg.DefaultRowLimit == 0 {
 		cfg.DefaultRowLimit = 1000
+	}
+	if cfg.KeybindMode == "" {
+		cfg.KeybindMode = "vim"
 	}
 
 	// Set UI visibility defaults (all true by default)

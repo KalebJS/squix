@@ -72,6 +72,13 @@ func (m Model) handleKeyPress(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	}
 
 	// Normal table navigation
+	if m.keybindMode == "helix" {
+		return m.handleHelixKeyPress(msg)
+	}
+	return m.handleVimKeyPress(msg)
+}
+
+func (m Model) handleVimKeyPress(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
 	case "ctrl+c", "q":
 		return m, tea.Quit
@@ -115,20 +122,104 @@ func (m Model) handleKeyPress(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.startExportAllFormatSelection()
 
 	case "enter":
-		// If this is a tables list, select the table
 		if m.isTablesList {
 			if m.selectedRow >= 0 && m.selectedRow < m.numRows() {
-				// Get table name from the first column (should be "name")
 				m.selectedTableName = m.data[m.selectedRow][0]
 				return m, tea.Quit
 			}
 		}
-		// Otherwise, show detail view (JSON viewer)
 		return m.showDetailView(), nil
 
 	case "u":
 		return m.updateCell()
 	case "D":
+		return m.deleteRow()
+	case "e":
+		return m.editAndRerunQuery()
+	case "s":
+		return m.saveQuery()
+	case "/":
+		return m.startCellSearch(), nil
+	case "f":
+		return m.startColumnSearch(), nil
+	case "n":
+		return m.nextSearchMatch(), nil
+	case "N":
+		return m.prevSearchMatch(), nil
+	case ",":
+		return m.prevColumnMatch(), nil
+	case ";":
+		return m.nextColumnMatch(), nil
+	}
+
+	return m, nil
+}
+
+func (m Model) handleHelixKeyPress(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	// Handle gg sequence: first g sets pendingG, second g jumps to first row
+	if m.pendingG {
+		m.pendingG = false
+		if msg.String() == "g" {
+			return m.jumpToFirstRow(), nil
+		}
+		// Fall through and process the key normally below
+	}
+
+	switch msg.String() {
+	case "ctrl+c", "q":
+		return m, tea.Quit
+	case "?":
+		m.uiVisibility.FooterKeymaps = !m.uiVisibility.FooterKeymaps
+		return m, nil
+
+	case "up", "k":
+		return m.moveUp(), nil
+	case "down", "j":
+		return m.moveDown(), nil
+	case "left", "h":
+		return m.moveLeft(), nil
+	case "right", "l":
+		return m.moveRight(), nil
+
+	case "g":
+		m.pendingG = true
+		return m, nil
+	case "G", "ge":
+		return m.jumpToLastRow(), nil
+	case "gh":
+		return m.jumpToFirstCol(), nil
+	case "gl":
+		return m.jumpToLastCol(), nil
+
+	case "pgup", "ctrl+u":
+		return m.pageUp(), nil
+	case "pgdown", "ctrl+d":
+		return m.pageDown(), nil
+
+	case "v":
+		return m.toggleVisualMode()
+	case "x":
+		return m.toggleVisualLineMode()
+
+	case "y":
+		return m.copySelection()
+	case "o":
+		return m.startExportFormatSelection()
+	case "O":
+		return m.startExportAllFormatSelection()
+
+	case "enter":
+		if m.isTablesList {
+			if m.selectedRow >= 0 && m.selectedRow < m.numRows() {
+				m.selectedTableName = m.data[m.selectedRow][0]
+				return m, tea.Quit
+			}
+		}
+		return m.showDetailView(), nil
+
+	case "u":
+		return m.updateCell()
+	case "d":
 		return m.deleteRow()
 	case "e":
 		return m.editAndRerunQuery()

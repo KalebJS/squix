@@ -237,7 +237,11 @@ func (m Model) renderFooter() string {
 			) + styles.Faint.Render(
 				"pdate",
 			)
-			delInfo = styles.TableHeader.Render("D") + styles.Faint.Render("el")
+			if m.keybindMode == "helix" {
+				delInfo = styles.TableHeader.Render("d") + styles.Faint.Render("el")
+			} else {
+				delInfo = styles.TableHeader.Render("D") + styles.Faint.Render("el")
+			}
 		} else if m.tableName != "" {
 			updateInfo = styles.TableHeader.Render(
 				"u",
@@ -251,11 +255,17 @@ func (m Model) renderFooter() string {
 			delInfo = ""
 		}
 
-		sel := styles.TableHeader.Render("v") + styles.Faint.Render("sel")
+		var sel, exportKey string
+		if m.keybindMode == "helix" {
+			sel = styles.TableHeader.Render("v") + styles.Faint.Render("/") + styles.TableHeader.Render("x") + styles.Faint.Render("sel")
+			exportKey = styles.TableHeader.Render("o") + styles.Faint.Render("xport")
+		} else {
+			sel = styles.TableHeader.Render("v") + styles.Faint.Render("sel")
+			exportKey = styles.Faint.Render("e") + styles.TableHeader.Render("x") + styles.Faint.Render("port")
+		}
 		edit := styles.TableHeader.Render("e") + styles.Faint.Render("ditSQL")
 		save := styles.TableHeader.Render("s") + styles.Faint.Render("ave")
 		yank := styles.TableHeader.Render("y") + styles.Faint.Render("ank")
-		exportKey := styles.Faint.Render("e") + styles.TableHeader.Render("x") + styles.Faint.Render("port")
 		searchKey := styles.TableHeader.Render("/") + styles.Faint.Render("srch")
 		colSearchKey := styles.TableHeader.Render("f") + styles.Faint.Render("col")
 		quit := styles.TableHeader.Render("q") + styles.Faint.Render("uit")

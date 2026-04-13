@@ -66,6 +66,9 @@ type Model struct {
 	searchColMatches []int
 	searchCursor     int
 	columnSearchMode bool
+	// Keybind mode
+	keybindMode string
+	pendingG    bool // helix: tracks first g in gg sequence
 }
 
 type blinkMsg struct{}
@@ -80,6 +83,7 @@ func New(
 	query db.Query,
 	columnWidth int,
 	visibility config.UIVisibility,
+	keybindMode string,
 ) Model {
 	columnTypes := make([]string, len(columns))
 
@@ -155,6 +159,7 @@ func New(
 		searchColMatches:  []int{},
 		searchCursor:      0,
 		columnSearchMode:  false,
+		keybindMode:       keybindMode,
 	}
 }
 
