@@ -66,9 +66,8 @@ type Model struct {
 	searchColMatches []int
 	searchCursor     int
 	columnSearchMode bool
-	// Keybind mode
-	keybindMode string
-	pendingG    bool // helix: tracks first g in gg sequence
+	keybindMode      string
+	pendingG         bool // tracks first g in gg/ge helix sequence
 }
 
 type blinkMsg struct{}

@@ -255,12 +255,11 @@ func (m Model) renderFooter() string {
 			delInfo = ""
 		}
 
-		var sel, exportKey string
+		sel := styles.TableHeader.Render("v") + styles.Faint.Render("sel")
+		var exportKey string
 		if m.keybindMode == "helix" {
-			sel = styles.TableHeader.Render("v") + styles.Faint.Render("sel")
 			exportKey = styles.Faint.Render("exp") + styles.TableHeader.Render("o") + styles.Faint.Render("rt")
 		} else {
-			sel = styles.TableHeader.Render("v") + styles.Faint.Render("sel")
 			exportKey = styles.Faint.Render("e") + styles.TableHeader.Render("x") + styles.Faint.Render("port")
 		}
 		edit := styles.TableHeader.Render("e") + styles.Faint.Render("ditSQL")
